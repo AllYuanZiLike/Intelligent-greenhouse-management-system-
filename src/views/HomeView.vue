@@ -7,12 +7,48 @@
     <div class="main">
       <div class="left">
         <div class="left-up">
-          <el-button class="btn" plain>设置</el-button>
-          <el-button class="btn" plain>切换</el-button>
+          <el-button class="btn" plain @click="table = true">设置</el-button>
+          <el-drawer
+              v-model="table"
+              title="设置"
+              direction="rtl"
+              size="50%"
+          >
+            <el-table :data="tableData">
+              <el-table-column property="date" label="Date" width="150"/>
+              <el-table-column property="name" label="Name" width="200"/>
+              <el-table-column property="address" label="Address"/>
+            </el-table>
+          </el-drawer>
+          <el-button class="btn" plain @click="table2 = true">切换</el-button>
+          <el-drawer
+              v-model="table2"
+              title="切换"
+              direction="rtl"
+              size="50%"
+          >
+            <el-table :data="tableData">
+              <el-table-column property="date" label="Date" width="150"/>
+              <el-table-column property="name" label="Name" width="200"/>
+              <el-table-column property="address" label="Address"/>
+            </el-table>
+          </el-drawer>
           <el-button class="btn" plain>刷新</el-button>
         </div>
         <div class="left-down">
-          <el-button class="warning-btn" plain>报警记录</el-button>
+          <el-button class="warning-btn" plain @click="table3 = true">报警记录</el-button>
+          <el-drawer
+              v-model="table3"
+              title="报警记录"
+              direction="rtl"
+              size="50%"
+          >
+            <el-table :data="tableData">
+              <el-table-column property="date" label="Date" width="150"/>
+              <el-table-column property="name" label="Name" width="200"/>
+              <el-table-column property="address" label="Address"/>
+            </el-table>
+          </el-drawer>
         </div>
       </div>
       <div class="middle">
@@ -21,9 +57,6 @@
         </div>
         <div class="middle-down">
           <div style="width: 730px;height: 220px;">
-            <!--            <el-scrollbar class="scroll"  max-height="220px">-->
-            <!--              -->
-            <!--            </el-scrollbar>-->
             <div class="border-box">
               <el-table :data="tableData" height="220">
                 <el-table-column prop="date" label="Date"/>
@@ -46,10 +79,10 @@
 </template>
 
 <script setup lang="ts">
-// import { Vue } from 'vue-class-component';
 import * as echarts from "echarts";
 import {onMounted, ref} from "vue";
 
+//折线图
 //声明周期函数，自动执行初始化
 onMounted(() => {
   init();
@@ -57,7 +90,6 @@ onMounted(() => {
 //初始化函数
 function init() {
   let chartDom = document.getElementById('chart');
-  // var myChart = echarts.init(chartDom, 'dark');
   let myChart = echarts.init(chartDom, 'dark');
   let option;
 
@@ -79,7 +111,7 @@ function init() {
   option && myChart.setOption(option);
 }
 
-
+//表格
 const value = ref('')
 const options = [
   {
@@ -120,10 +152,10 @@ const tableData = [
   },
 ]
 
-const activeNames = ref(['1'])
-const handleChange = (val: string[]) => {
-  console.log(val)
-}
+// 抽屉
+const table = ref(false)
+const table2 = ref(false)
+const table3 = ref(false)
 </script>
 
 <style scoped>
@@ -157,32 +189,25 @@ const handleChange = (val: string[]) => {
 }
 .main {
   display: flex;
-//align-items: center;
   justify-content: space-around;
-//height: 100%;
 }
 .border-box {
   border: 1px solid #5d6c99;
 }
 .left {
-//flex: 1;
   width: 15%;
   text-align: center;
   display: flex;
   flex-direction: column;
-//justify-content: space-between;
-//background-color: aquamarine;
   margin-right: 10px;
 }
 .middle {
-//flex: 1;
   width: 55%;
   display: flex;
   flex-direction: column;
   margin-right: 10px;
 }
 .right {
-//flex: 1;
   width: 30%;
   margin-right: 10px;
 }
@@ -191,8 +216,6 @@ const handleChange = (val: string[]) => {
   display: flex;
   flex-direction: column;
   align-items: center;
-//height: 70%;
-//background-color: aquamarine;
 }
 
 .btn {
@@ -203,8 +226,6 @@ const handleChange = (val: string[]) => {
   background-color: #2c31;
 }
 .left-down {
-//height: 30%;
-//background-color: #42b983;
 }
 .warning-btn {
   width: 100px;
@@ -220,24 +241,8 @@ const handleChange = (val: string[]) => {
 
 .middle-down {
   margin: 30px 0 12px 0;
-//padding: 10px 0 10px 0;
   display: flex;
   justify-content: center;
-//height: 400px;
-}
-.el-table{
-  background-color: #2c31 !important;
-//color: #ffffff;
-}
-.scroll{
-  width: 730px;
-  height: 220px;
-  padding: 5px;
-
-}
-.el-collapse[data-v-9ea40744] {
-  background-color: #2c31 !important;
-  color: #ffffff !important;
 }
 /* 样式这里要设置长宽，不然显示不出来 */
 #chart {
