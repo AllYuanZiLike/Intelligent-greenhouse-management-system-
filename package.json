@@ -4,10 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "postinstall": "patch-package"
   },
   "dependencies": {
+    "@jiaminghi/data-view": "^2.10.0",
+    "axios": "^1.7.2",
     "core-js": "^3.8.3",
+    "dayjs": "^1.11.11",
     "echarts": "^5.5.0",
     "element-plus": "^2.7.4",
     "vue": "^3.2.13",
@@ -23,6 +27,7 @@
     "@vue/cli-service": "~5.0.0",
     "less": "^4.0.0",
     "less-loader": "^8.0.0",
+    "patch-package": "^8.0.0",
     "typescript": "~4.5.5"
   },
   "browserslist": [

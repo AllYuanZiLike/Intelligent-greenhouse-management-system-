@@ -1,19 +1,23 @@
 <template>
-  <router-link to="/"></router-link>
-  <nav>
+  <div class="app">
+<!--    <dv-border-box-11 title="智能温室管理系统" class="border">-->
+      <router-view/>
+<!--    </dv-border-box-11>-->
 
-    <!--    <router-link to="/about">About</router-link>-->
-  </nav>
-  <router-view/>
+  </div>
 </template>
 
 <style lang="less">
-#app {
+.app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   //text-align: center;
   color: #2c3e50;
+  height: 100vh;
+  width: 100vw;
+  z-index: -1;
+
 }
 
 //nav {
