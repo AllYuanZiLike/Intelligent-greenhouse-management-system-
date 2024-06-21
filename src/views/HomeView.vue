@@ -33,7 +33,7 @@
           </div>
           <div class="left-down">
             <dv-border-box-12 class="border" style="margin-bottom: 2vh">
-              <el-button class="warning-btn" plain @click="openAlarm()" :disabled="!isLogin">调控策略</el-button>
+              <el-button class="warning-btn" plain @click="openControl()" :disabled="!isLogin">调控策略</el-button>
             </dv-border-box-12>
             <dv-border-box-12 class="border">
               <el-button class="warning-btn" plain @click="openAlarm()" :disabled="!isLogin">报警记录</el-button>
@@ -65,6 +65,7 @@
   <SystemConfig ref="systemConfigRef"></SystemConfig>
   <Greenhouse ref="greenhouseRef" @switchGreenhouse="getGreenhouseById"></Greenhouse>
   <Alarm ref="alarmRef"></Alarm>
+  <Control ref="controlRef"></Control>
 </template>
 
 <script setup lang="ts">
@@ -75,6 +76,7 @@ import MyHome from '@/views/userPage/myHome.vue'
 import SystemConfig from '@/views/left/systemConfig.vue'
 import Greenhouse from '@/views/left/greenhouse.vue'
 import Alarm from '@/views/left/alarm.vue'
+import Control from "@/views/left/control.vue"
 import MiddleUp from '@/views/middle/middleUp/index.vue'
 import MiddleDown from '@/views/middle/middleDown/index.vue'
 import Right from '@/views/right/index.vue'
@@ -133,6 +135,11 @@ const openAlarm = ()=>{
   alarmRef.value.init();
 }
 
+const controlRef = ref()
+const openControl = ()=>{
+  controlRef.value.init();
+}
+
 const greenhouseInfo = reactive({
   id:"",
   al: null,
@@ -153,6 +160,10 @@ const getGreenhouseInfo = ()=>{
     Object.assign(greenhouseInfo,res.data.data)
     rightRef.value.getGreenhouseId(greenhouseInfo.id,isLogin.value)
     middleUpRef.value.getGreenhouseId(greenhouseInfo.id,isLogin.value)
+    controlRef.value.getGreenhouseId(greenhouseInfo.id,isLogin.value)
+    alarmRef.value.getGreenhouseId(greenhouseInfo.id,isLogin.value)
+    middleDownRef.value.getGreenhouseId(greenhouseInfo.id,isLogin.value)
+
   })
 }
 
@@ -163,9 +174,13 @@ const getGreenhouseById = (id:any)=>{
     Object.assign(greenhouseInfo,res.data.data)
     rightRef.value.getGreenhouseId(greenhouseInfo.id,isLogin.value)
     middleUpRef.value.getGreenhouseId(greenhouseInfo.id,isLogin.value)
+    controlRef.value.getGreenhouseId(greenhouseInfo.id,isLogin.value)
+    alarmRef.value.getGreenhouseId(greenhouseInfo.id,isLogin.value)
+    middleDownRef.value.getGreenhouseId(greenhouseInfo.id,isLogin.value)
   })
 }
 
+const middleDownRef = ref()
 const middleUpRef = ref()
 const rightRef = ref();
 const getRefresh = ()=>{
@@ -175,6 +190,7 @@ const getRefresh = ()=>{
 }
 
 const getNewEveData = ()=>{
+  console.log(333)
   middleUpRef.value.getHistoryData();
 }
 import { debounce } from "lodash";

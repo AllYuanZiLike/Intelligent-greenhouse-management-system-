@@ -39,6 +39,7 @@ const getGreenhouseId = (id:any,isLogin:boolean)=>{
   greenhouse.gid = id;
   greenhouse.isLogin = isLogin
   getHistoryData()
+  console.log(222)
 }
 const getHistoryData = ()=>{
   console.log(greenhouse)
@@ -222,13 +223,6 @@ const getHistoryData = ()=>{
     option && myChart.setOption(option);
   })
 }
-
-watch(data, () => {
-  // 当 chartData 变更时，更新图表
-  getHistoryData()
-}, {
-  deep: true, // 如果 chartData 是一个对象或数组，你可能需要深度监听
-});
 
 //时钟
 const nowTime = ref();

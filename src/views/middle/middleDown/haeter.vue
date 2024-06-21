@@ -8,15 +8,14 @@
     <div class="box">
 
       <div class="btn-box">
-        <div class="title">系统配置</div>
-        <el-button @click="dialogVisible=true">添加配置</el-button>
+        <div class="title">加热设备</div>
+        <el-button @click="dialogVisible=true">添加设备</el-button>
       </div>
       <div class="table-box">
-        <el-table :data="tableData.dataList" height="450" style="width: 100%;">
-          <el-table-column type="index" label="序号" width="50" />
-          <el-table-column prop="key" label="键" width="150" align="center" />
-          <el-table-column prop="value" label="值" width="150"  align="center"/>
-          <el-table-column fixed="right" label="操作" width="150">
+        <el-table :data="tableData.dataList" height="450" style="width: 100%">
+          <el-table-column prop="name" label="设备名字" width="100" align="center" />
+          <el-table-column prop="status" label="状态" width="120"  align="center"/>
+          <el-table-column fixed="right" label="操作" width="120">
             <template #default="scope">
               <el-button link type="primary" size="small" @click="openUpdate(scope.row.id)">
                 修改
@@ -39,9 +38,10 @@
   <!--  添加温室弹窗-->
   <el-dialog
       v-model="dialogVisible"
-      :title="dataForm.id?'修改配置':'添加配置'"
+      :title="dataForm.id?'修改设备':'添加设备'"
       width="25vw"
       center
+      class="login"
   >
     <el-form
 
@@ -52,11 +52,13 @@
         :rules="dataFormRules"
         label-width="auto"
     >
-      <el-form-item label="键" prop="key">
-        <el-input v-model.number="dataForm.key" />
+      <el-form-item label="设备名字" prop="name">
+        <el-input v-model.number="dataForm.name" />
       </el-form-item>
-      <el-form-item label="值" prop="value">
-        <el-input v-model="dataForm.value" />
+      <el-form-item label="状态" prop="location">
+        <el-select v-model="dataForm.status" placeholder="请选择或者输入新值">
+          <el-option v-for="item in statusText" :key="item.value" :label="item.label" :value="item.value"/>
+        </el-select>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -78,25 +80,32 @@ import {ElMessage, FormInstance, FormRules} from "element-plus";
 const visibleDrawer = ref(false)
 const init = ()=>{
   visibleDrawer.value = true;
-  getConfigList();
+  getGreenhouseList();
 }
 
 const dialogVisible = ref(false)
+
+const statusText = reactive([
+  {value:"空闲中",label:"空闲中"},
+  {value:"已停用",label:"已停用"},
+])
 const dataFormRef = ref()
 const dataForm = reactive({
   id:"",
-  uid:"",
-  key:"",
-  value:""
+  gid:"",
+  name:"",
+  status:"",
+  type:0
 })
 
 const dataFormRules = reactive<FormRules<typeof dataForm>>({
-  key: [{ required:true, trigger: 'blur' }],
-  value: [{ required:true, trigger: 'blur' }],
+  name: [{ required:true, trigger: 'blur' }],
+  status: [{ required:true, trigger: 'blur' }],
+  type: [{ required:true, trigger: 'blur' }]
 })
 
 const openUpdate = (id:number)=>{
-  service.get("/sys/get",{params:{id:id}}).then(res=>{
+  service.get("/dev/getDev",{params:{id:id}}).then(res=>{
     console.log(res)
     if(res.data.code!=200) return false
     Object.assign(dataForm,res.data.data)
@@ -104,45 +113,37 @@ const openUpdate = (id:number)=>{
   })
 }
 const addOrUpdateGreenhouse = (formEl: FormInstance | undefined)=>{
-  dataForm.uid = store.state.userInfo.id
+  dataForm.gid = greenhouse.gid
   if (!formEl) return
   formEl.validate((valid) => {
     if (valid) {
       console.log(dataForm)
-      dataForm.id?service.put("/sys/update",dataForm).then(res=>{
+      dataForm.id?service.put("/dev/updateDev",dataForm).then(res=>{
             console.log(res)
             if(res.data.code != 200) return false
             ElMessage.success(res.data.msg)
             dialogVisible.value = false;
-            getConfigList()
-            let dataFormInit = {
-              id:"",
-              uid:"",
-              key:"",
-              value:""
-            }
-            Object.assign(dataForm,dataFormInit)
+            getGreenhouseList()
           })
-          :service.post("/sys/add",dataForm)
+          :service.post("/dev/addDev",dataForm)
               .then(res=>{
                 console.log(res)
                 if(res.data.code != 200) return false
                 ElMessage.success(res.data.msg)
                 dialogVisible.value = false;
-                getConfigList()
+                getGreenhouseList()
               })
     }
   })
 }
 
 const deleteGreenhouse = (id:number)=>{
-  service.delete(`/sys/delete`,{params:{id:id}}).then(res=>{
+  service.delete(`/dev/deleteDev`,{params:{id:id}}).then(res=>{
     console.log(res)
     if(res.data.code!=200) return false
     ElMessage.success(res.data.msg);
   })
 }
-
 
 const tableData = reactive({
   current:1,
@@ -151,8 +152,8 @@ const tableData = reactive({
   dataList:[]
 });
 
-const getConfigList = ()=>{
-  service.get("/sys/getPages",{params:{uid:store.state.userInfo.id,pageNum:tableData.current,pageSize:tableData.size}}).then(res=> {
+const getGreenhouseList = ()=>{
+  service.get("/dev/getPagesByType",{params:{gid:greenhouse.gid,type:0,pageNum:tableData.current,pageSize:tableData.size}}).then(res=> {
     console.log(res)
     if (res.data.code != 200) return false
     tableData.total = res.data.data.totalCount;
@@ -164,21 +165,30 @@ const getConfigList = ()=>{
 
 const handleCurrentChange = (val:number)=>{
   tableData.current = val
-  getConfigList()
+  getGreenhouseList()
 }
 const handleSizeChange = (val:number)=>{
   tableData.size = val
-  getConfigList()
+  getGreenhouseList()
 }
 
-
+const greenhouse = reactive({
+  gid: "1",
+  isLogin:false
+})
+const isLogin = ref(false)
+const getGreenhouseId = (id:string,login:boolean)=>{
+  greenhouse.gid = id
+  isLogin.value = login
+  console.log(id)
+}
 defineExpose({
-  init,getConfigList
+  init,getGreenhouseId
 })
 </script>
 
 <style scoped lang="less">
-.el-drawer.ltr{
+.el-drawer.rtl{
   background-color: transparent;
   //background-color: rgba(31, 66, 140, 0.56);
   .box{
