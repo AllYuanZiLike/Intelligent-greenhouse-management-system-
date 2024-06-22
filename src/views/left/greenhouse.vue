@@ -1,5 +1,5 @@
 <template>
-  <el-drawer
+  <el-drawer class="greenhouse"
       v-model="visibleDrawer"
       title="温室"
       direction="rtl"
@@ -15,9 +15,9 @@
       <div class="table-box">
         <el-table :data="tableData.dataList" height="450" style="width: 100%" @row-click="toggleGreenhouse">
           <el-table-column prop="name" label="温室名字" width="100" align="center" />
-          <el-table-column prop="location" label="温室位置" width="120"  align="center"/>
-          <el-table-column prop="description" label="描述" align="center" />
-          <el-table-column fixed="right" label="操作" width="120">
+          <el-table-column prop="location" label="温室位置" width="130"  align="center"/>
+          <el-table-column prop="description" label="描述" width="160" align="center" />
+          <el-table-column fixed="right" label="操作" width="120" align="center">
             <template #default="scope">
               <el-button link type="primary" size="small" @click="openUpdate(scope.row.id)">
                 修改
@@ -183,37 +183,40 @@ defineExpose({
 })
 </script>
 
-<style scoped lang="less">
-.el-drawer.ltr{
-  background-color: transparent;
-  //background-color: rgba(31, 66, 140, 0.56);
-  .box{
-    height: 100%;
-    background-color: #c6cbff;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    border-radius: 5%;
-    border:2px double #6a83ff;
-    .btn-box {
+<style lang="less">
+.greenhouse{
+  background-color: transparent !important;
+
+  .el-drawer__body {
+    padding: 2vh 1vw;
+    .box{
+      height: 100%;
+      background-color: #c6cbff;
       display: flex;
-      flex-direction: row;
-      justify-content: space-between;
+      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      height: 10%;
-      .title {
+      border-radius: 5%;
+      border:2px double #6a83ff;
+      .btn-box {
         display: flex;
         flex-direction: row;
-        justify-content: center;
-        color: #fff;
-        font-size: 2vh;
+        justify-content: space-between;
+        align-items: center;
+        height: 10%;
+        width: 80%;
+        .title {
+          color: #fff;
+          font-size: 2.8vh;
+        }
+      }
+      .table-box {
+        height: 80%;
+        background-color: #fff;
+        text-align: center;
+        border-radius: 10px;
       }
     }
-    .table-box {
-      height: 80%;
-      background-color: #fff;
-    }
-}
+  }
 }
 </style>

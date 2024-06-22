@@ -1,5 +1,6 @@
 <template>
   <el-drawer
+      class="control"
       v-model="visibleDrawer"
       direction="rtl"
       size="40%"
@@ -66,7 +67,7 @@
               <el-option v-for="item in configList" :key="item.value" :label="`${item.key}:${item.value}`" :value="item.value"/>
             </el-select>
           </el-form-item>
-          <el-form-item>
+          <el-form-item class="editbtns">
             <el-button type="primary" @click="submitDataForm(dataFormRef)">保存</el-button>
             <el-button @click="visibleDrawer=false">关闭</el-button>
           </el-form-item>
@@ -150,36 +151,44 @@ defineExpose({
 })
 </script>
 
-<style scoped lang="less">
-.el-drawer.ltr{
-  background-color: transparent;
-  //background-color: rgba(31, 66, 140, 0.56);
-  .box{
-    height: 100%;
-    background-color: #c6cbff;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    border-radius: 5%;
-    border:2px double #6a83ff;
-    .btn-box {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      height: 10%;
-      .title {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        color: #fff;
-        font-size: 2vh;
+<style lang="less">
+.control{
+  background-color: transparent !important;
+
+  .el-drawer__body {
+    padding: 2vh 1vw;
+    .box{
+      height: 100%;
+      background-color: #c6cbff;
+      border-radius: 5%;
+      border:2px double #6a83ff;
+      .btn-box {
+        height: 10%;
+        width: 100%;
+        .title {
+          color: #fff;
+          font-size: 2.8vh;
+          margin-top: 50px;
+          margin-left: 10%;
+        }
       }
-    }
-    .table-box {
-      height: 80%;
-      background-color: #fff;
+      .form-box {
+        margin: 2vh 2vw;
+        color: #ffffff;
+        .el-form-item__label {
+          color: #ffffff;
+          font-size: 2.2vh;
+        }
+        .editbtns {
+          float: right;
+        }
+      }
+      .table-box {
+        height: 80%;
+        background-color: #fff;
+        text-align: center;
+        border-radius: 10px;
+      }
     }
   }
 }
