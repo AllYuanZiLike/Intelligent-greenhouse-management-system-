@@ -47,7 +47,7 @@
           </dv-border-box-7>
           <div class="middle-down">
             <dv-border-box-5 class="border-box">
-              <MiddleDown ></MiddleDown>
+              <MiddleDown ref="middleDownRef"></MiddleDown>
             </dv-border-box-5>
           </div>
         </div>
@@ -101,7 +101,19 @@ const getLogin = (e:boolean)=>{
   isLogin.value = store.state.isLogin;
   console.log(isLogin.value)
   // getRefresh()
-  getGreenhouseInfo()
+  // getGreenhouseInfo()
+  let noGreenInfo = {
+    id:"",
+    al: null,
+    con: null,
+    description: "暂无信息",
+    dev: null,
+    env: null,
+    location: "暂无信息",
+    name:"暂无信息",
+    uid:""
+  }
+  Object.assign(greenhouseInfo,noGreenInfo)
 }
 
 const loginRef = ref();
