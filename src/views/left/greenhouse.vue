@@ -30,9 +30,11 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-pagination layout="prev, pager, next,sizes" v-model:current-page="tableData.current" @current-change="handleCurrentChange"
-                       v-model:page-size="tableData.size" :page-sizes="[5, 10, 15, 20]" @size-change="handleSizeChange"
-                       v-model:total="tableData.total" />
+        <div class="pagination">
+          <el-pagination layout="prev, pager, next,sizes" v-model:current-page="tableData.current" @current-change="handleCurrentChange"
+                         v-model:page-size="tableData.size" :page-sizes="[5, 10, 15, 20]" @size-change="handleSizeChange"
+                         v-model:total="tableData.total" />
+        </div>
       </div>
     </div>
   </el-drawer>
@@ -212,9 +214,45 @@ defineExpose({
       }
       .table-box {
         height: 80%;
-        background-color: #fff;
+        //background-color: #fff;
         text-align: center;
         border-radius: 10px;
+        background-color: #c6cbff;
+        .el-table {
+          --el-table-header-bg-color: #c6cbff;
+          --el-table-bg-color: #c6cbff;
+          --el-table-tr-bg-color: #c6cbff;
+          --el-table-text-color: #fff;
+          --el-table-row-hover-bg-color: #6a83ff;
+          .el-button--primary.is-link, .el-button--primary.is-plain, .el-button--primary.is-text {
+            --el-button-text-color: #ffffff;
+          }
+        }
+        .el-table thead {
+          color: #fff;
+        }
+        .pagination {
+          margin-top: 35px;
+          float: right;
+          //background-color: #c6cbff;
+          .el-pagination {
+            --el-pagination-bg-color: #c6cbff;
+            --el-pagination-text-color: #c6cbff;
+            --el-pagination-button-disabled-color: #ffffff;
+            --el-pagination-button-disabled-bg-color: #c6cbff;
+            --el-pagination-hover-color: #ffffff;
+            .el-select__wrapper {
+              background-color: #c6cbff;
+              box-shadow: 0 0 0 1px #6a83ff inset;
+            }
+            .el-select__placeholder {
+              color: #fff;
+            }
+            .el-select__caret {
+              color: #fff;
+            }
+          }
+        }
       }
     }
   }
