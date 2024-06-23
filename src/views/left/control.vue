@@ -68,8 +68,8 @@
             </el-select>
           </el-form-item>
           <el-form-item class="editbtns">
-            <el-button type="primary" @click="submitDataForm(dataFormRef)">保存</el-button>
-            <el-button @click="visibleDrawer=false">关闭</el-button>
+            <el-button class="savebtn" type="primary" @click="submitDataForm(dataFormRef)">保存</el-button>
+            <el-button class="cancelbtn" @click="visibleDrawer=false">关闭</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -181,6 +181,17 @@ defineExpose({
         }
         .editbtns {
           float: right;
+        }
+        .el-select__wrapper.is-focused {
+          box-shadow: 0 0 0 1px #6a83ff inset;
+        }
+        .savebtn {
+          --el-button-bg-color: #6a83ff;
+          --el-button-hover-bg-color: #6a83ff75;
+          --el-button-hover-border-color: #6a83ff;
+        }
+        .cancelbtn {
+          --el-button-hover-text-color: #6a83ff;
         }
       }
       .table-box {

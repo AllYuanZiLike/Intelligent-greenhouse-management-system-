@@ -64,8 +64,8 @@
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button type="primary" @click="addOrUpdateGreenhouse(dataFormRef)">确认</el-button>
-        <el-button @click="dialogVisible=false">取消</el-button>
+        <el-button class="confirmbtn" type="primary" @click="addOrUpdateGreenhouse(dataFormRef)">确认</el-button>
+        <el-button class="cancelbtn" @click="dialogVisible=false">取消</el-button>
       </div>
     </template>
   </el-dialog>
@@ -206,6 +206,9 @@ defineExpose({
           color: #fff;
           font-size: 2.8vh;
         }
+        .addbtn {
+          --el-button-hover-text-color: #6a83ff;
+        }
       }
       .table-box {
         height: 80%;
@@ -250,6 +253,26 @@ defineExpose({
         }
       }
     }
+  }
+}
+.el-dialog {
+  --el-dialog-bg-color: #c6cbff !important;
+  .el-dialog__title {
+    color: #fff;
+  }
+  .el-form-item__label {
+    color: #fff;
+  }
+  .confirmbtn {
+    --el-button-bg-color: #6a83ff;
+    --el-button-hover-bg-color: #6a83ff75;
+    --el-button-hover-border-color: #6a83ff;
+  }
+  .cancelbtn {
+    --el-button-hover-text-color: #6a83ff;
+  }
+  .el-input {
+    --el-input-focus-border-color: #6a83ff;
   }
 }
 </style>

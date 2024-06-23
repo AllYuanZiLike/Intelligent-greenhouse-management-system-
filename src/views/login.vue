@@ -21,12 +21,12 @@
       <el-form-item label="密码" prop="password">
         <el-input v-model="loginForm.password" type="password" autocomplete="off" />
       </el-form-item>
-      <span style="margin: 0 auto;color:#2b62a9;font-size: 1vh;cursor: pointer;" @click="loginVisible=false;registerVisible=true">暂无账号，去注册</span>
+      <span style="margin: 0 auto;color:#6a83ff;font-size: 1.5vh;cursor: pointer;" @click="loginVisible=false;registerVisible=true">暂无账号，去注册</span>
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button type="primary" @click="submitLoginForm(loginFormRef)">登录</el-button>
-        <el-button @click="loginVisible=false">取消</el-button>
+        <el-button class="loginbtn" type="primary" @click="submitLoginForm(loginFormRef)">登录</el-button>
+        <el-button class="cancelbtn" @click="loginVisible=false">取消</el-button>
       </div>
     </template>
   </el-dialog>
@@ -62,8 +62,8 @@
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button type="primary" @click="submitRegisterForm(registerFormRef)">注册</el-button>
-        <el-button @click="registerVisible=false;loginVisible=true;">已有账号，去登录</el-button>
+        <el-button class="registerbtn" type="primary" @click="submitRegisterForm(registerFormRef)">注册</el-button>
+        <el-button class="cancelbtn" @click="registerVisible=false;loginVisible=true;">已有账号，去登录</el-button>
       </div>
     </template>
   </el-dialog>
@@ -178,6 +178,26 @@ defineExpose({
 })
 </script>
 
-<style scoped>
+<style lang="less">
+.el-dialog {
+  --el-dialog-bg-color: #c6cbff !important;
+  .el-dialog__title {
+    color: #fff;
+  }
+  .el-form-item__label {
+    color: #fff;
+  }
+  .loginbtn ,.registerbtn {
+    --el-button-bg-color: #6a83ff;
+    --el-button-hover-bg-color: #6a83ff75;
+    --el-button-hover-border-color: #6a83ff;
+  }
+  .cancelbtn {
+    --el-button-hover-text-color: #6a83ff;
+  }
+  .el-input {
+    --el-input-focus-border-color: #6a83ff;
+  }
+}
 
 </style>
