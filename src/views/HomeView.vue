@@ -1,7 +1,7 @@
 <template>
     <div class="home">
       <dv-loading v-if="loading">Loading...</dv-loading>
-      <dv-border-box-11 title="智能温室管理系统 V1.0" class="border" v-if="!loading">
+      <dv-border-box-11 title="智能温室管理系统  V1.0" class="border" v-if="!loading">
         <div class="main">
           <div class="left">
             <div class="left-up">
