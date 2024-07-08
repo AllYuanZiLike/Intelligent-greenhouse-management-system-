@@ -1,67 +1,68 @@
 <template>
     <div class="home">
       <dv-loading v-if="loading">Loading...</dv-loading>
-      <dv-border-box-11 title="智能温室管理系统" class="border" v-if="!loading">
+      <dv-border-box-11 title="智能温室管理系统 V1.0" class="border" v-if="!loading">
         <div class="main">
-        <div class="left">
-          <div class="left-up">
-<!--              <el-button class="my-btn" plain>个人主页</el-button>-->
-              <div class="my-btn" @click="openMyHome()"  v-show="isLogin">
-                <img src="../assets/person.png" alt="">
-                <div class="username">{{store.state.userInfo.username}}</div>
-              </div>
-              <el-button class="login-btn" plain @click="openLogin()" v-show="!isLogin">登录</el-button>
-              <dv-decoration-4 :reverse="true" class="left-up-bottom-b" />
-
-          </div>
-          <div class="left-center">
-            <div class="greenhouse" v-show="isLogin">
-              <dv-decoration-11 class="name">{{greenhouseInfo.name}}</dv-decoration-11>
-<!--              <div></div>-->
-              <div class="location">
-                <div class="img">
-                  <img src="../assets/left/location.png" alt="">
+          <div class="left">
+            <div class="left-up">
+  <!--              <el-button class="my-btn" plain>个人主页</el-button>-->
+                <div class="my-btn" @click="openMyHome()"  v-show="isLogin">
+                  <img src="../assets/person.png" alt="">
+                  <div class="username">{{store.state.userInfo.username}}</div>
                 </div>
-                <div class="text">{{greenhouseInfo.location}}</div>
+                <el-button class="login-btn" plain @click="openLogin()" v-show="!isLogin">登录</el-button>
+                <dv-decoration-4 :reverse="true" class="left-up-bottom-b" />
+
+            </div>
+            <div class="left-center">
+              <div class="greenhouse" v-show="isLogin">
+                <dv-decoration-11 class="name">{{greenhouseInfo.name}}</dv-decoration-11>
+  <!--              <div></div>-->
+                <div class="location">
+                  <div class="img">
+                    <img src="../assets/left/location.png" alt="">
+                  </div>
+                  <div class="text">{{greenhouseInfo.location}}</div>
+                </div>
+              </div>
+              <div class="btn-box">
+                <el-button class="btn" plain @click="openSystemConfig()" :disabled="!isLogin" :icon="Setting">设置</el-button>
+                <el-button class="btn" plain @click="openGreenhouse()" :disabled="!isLogin"  :icon="Switch">切换</el-button>
+                <el-button class="btn" plain @click="getRefresh()" :disabled="!isLogin"  :icon="Refresh">刷新</el-button>
               </div>
             </div>
-            <div class="btn-box">
-              <el-button class="btn" plain @click="openSystemConfig()" :disabled="!isLogin" :icon="Setting">设置</el-button>
-              <el-button class="btn" plain @click="openGreenhouse()" :disabled="!isLogin"  :icon="Switch">切换</el-button>
-              <el-button class="btn" plain @click="getRefresh()" :disabled="!isLogin"  :icon="Refresh">刷新</el-button>
+            <div class="left-down">
+              <dv-border-box-12 class="border" style="margin-bottom: 2vh">
+                <el-button class="warning-btn" plain @click="openControl()" :disabled="!isLogin">调控策略</el-button>
+              </dv-border-box-12>
+              <dv-border-box-12 class="border">
+                <el-button class="warning-btn" plain @click="openAlarm()" :disabled="!isLogin">报警记录</el-button>
+              </dv-border-box-12>
+
             </div>
           </div>
-          <div class="left-down">
-            <dv-border-box-12 class="border" style="margin-bottom: 2vh">
-              <el-button class="warning-btn" plain @click="openControl()" :disabled="!isLogin">调控策略</el-button>
-            </dv-border-box-12>
-            <dv-border-box-12 class="border">
-              <el-button class="warning-btn" plain @click="openAlarm()" :disabled="!isLogin">报警记录</el-button>
-            </dv-border-box-12>
-
+          <div class="middle">
+            <dv-border-box-7 class="middle-up">
+              <MiddleUp ref="middleUpRef"></MiddleUp>
+            </dv-border-box-7>
+            <div class="middle-down">
+              <dv-border-box-5 class="border-box">
+                <MiddleDown ref="middleDownRef"></MiddleDown>
+              </dv-border-box-5>
+            </div>
           </div>
-        </div>
-        <div class="middle">
-          <dv-border-box-7 class="middle-up">
-            <MiddleUp ref="middleUpRef"></MiddleUp>
-          </dv-border-box-7>
-          <div class="middle-down">
-            <dv-border-box-5 class="border-box">
-              <MiddleDown ref="middleDownRef"></MiddleDown>
-            </dv-border-box-5>
+          <div class="right">
+            <dv-border-box-8 class="right-down">
+              <Right ref="rightRef" @newDataCreated="getNewEveData"></Right>
+            </dv-border-box-8>
           </div>
-        </div>
-        <div class="right">
-          <dv-border-box-8 class="right-down">
-            <Right ref="rightRef" @newDataCreated="getNewEveData"></Right>
-          </dv-border-box-8>
-        </div>
       </div>
       </dv-border-box-11>
+<!--      <div class="bottom">©2024 河南科技学院</div>-->
     </div>
 
   <Login ref="loginRef" @getLogin="getLogin"></Login>
-  <MyHome ref="myHomeRef" @afterExit="getLogin"></MyHome>
+  <MyHome ref="myHomeRef" @afterExit="getLoginExit"></MyHome>
   <SystemConfig ref="systemConfigRef"></SystemConfig>
   <Greenhouse ref="greenhouseRef" @switchGreenhouse="getGreenhouseById"></Greenhouse>
   <Alarm ref="alarmRef"></Alarm>
@@ -98,6 +99,14 @@ const cancelLoading = ()=> {
 
 const isLogin = ref(false);
 const getLogin = (e:boolean)=>{
+  isLogin.value = store.state.isLogin;
+  console.log(isLogin.value)
+  // getRefresh()
+  getGreenhouseInfo()
+
+}
+
+const getLoginExit = (e:boolean)=>{
   isLogin.value = store.state.isLogin;
   console.log(isLogin.value)
   // getRefresh()
@@ -196,7 +205,8 @@ const middleDownRef = ref()
 const middleUpRef = ref()
 const rightRef = ref();
 const getRefresh = ()=>{
-  getGreenhouseInfo();
+  // getGreenhouseInfo();
+  getGreenhouseById(greenhouseInfo.id);
   rightRef.value.getEveInfo();
   middleUpRef.value.getHistoryData();
 }
@@ -228,6 +238,9 @@ const resizeObserver  = (window as any).ResizeObserver;
     background-image: url('../assets/bg.png');
     background-size: 100% 100%;
     box-shadow: 0 0 1vh blue;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
     .border {
       //height: 100%;
       //width: 100%;
@@ -388,6 +401,9 @@ const resizeObserver  = (window as any).ResizeObserver;
         }
 
       }
+    }
+    .bottom{
+      font-size: 1vh;
     }
   }
 

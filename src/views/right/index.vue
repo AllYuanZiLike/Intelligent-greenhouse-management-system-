@@ -24,7 +24,7 @@ import LeftUp from "@/views/right/leftUp.vue"
 import LeftDown from "@/views/right/leftDown.vue"
 import RightUp from "@/views/right/rightUp.vue"
 import RightDown from "@/views/right/rightDown.vue"
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {reactive} from "vue";
 import dayjs from "dayjs";
 import service from "@/axios";
@@ -40,7 +40,7 @@ const data = reactive({
   gid: "",
   time: "2024-06-27 17:36:03",
   temperature: 26,
-  humidity: 121,
+  humidity: 72,
   co2: 1234,
   other: "123"
 })
@@ -114,7 +114,7 @@ const addEvenData = ()=>{
       })
       let deviceData = [];
       for(let i=0;i<deviceNum;i++){
-        deviceData.push({gid:data.gid,type:1,status:"开启"})
+        deviceData.push({gid:data.gid,type:1,status:"运行中"})
       }
       service.post("/dev/control",deviceData).then(res=>{
         console.log(res)
@@ -131,7 +131,7 @@ const addEvenData = ()=>{
       })
       let deviceData = [];
       for(let i=0;i<deviceNum;i++){
-        deviceData.push({gid:data.gid,type:0,status:"开启"})
+        deviceData.push({gid:data.gid,type:0,status:"运行中"})
       }
       service.post("/dev/control",deviceData).then(res=>{
         console.log(res)
@@ -148,7 +148,7 @@ const addEvenData = ()=>{
       })
       let deviceData = [];
       for(let i=0;i<deviceNum;i++){
-        deviceData.push({gid:data.gid,type:2,status:"开启"})
+        deviceData.push({gid:data.gid,type:2,status:"运行中"})
       }
       service.post("/dev/control",deviceData).then(res=>{
         console.log(res)
@@ -165,7 +165,75 @@ const addEvenData = ()=>{
       })
       let deviceData = [];
       for(let i=0;i<deviceNum;i++){
-        deviceData.push({gid:data.gid,type:3,status:"开启"})
+        deviceData.push({gid:data.gid,type:3,status:"运行中"})
+      }
+      service.post("/dev/control",deviceData).then(res=>{
+        console.log(res)
+        if(res.data.code!=200) return false
+      })
+    }
+    if(data.co2>configData.co2Max) {
+      ElMessage.error({message:"CO₂浓度过高",duration:10000});
+      let deviceNum = 1;
+      if(data.humidity-configData.humidityMax==300) deviceNum=3;
+      service.post("/al/addAl",{gid:data.gid, time: data.time, parameter:2, value:data.co2, actionTaken:`启动${deviceNum}台通风机器`}).then(res=>{
+        console.log(res)
+        if(res.data.code!=200) return false
+      })
+      let deviceData = [];
+      for(let i=0;i<deviceNum;i++){
+        deviceData.push({gid:data.gid,type:4,status:"运行中"})
+      }
+      service.post("/dev/control",deviceData).then(res=>{
+        console.log(res)
+        if(res.data.code!=200) return false
+      })
+    }
+    if(data.co2<configData.co2Max) {
+      ElMessage.error({message:"CO₂浓度过低",duration:10000});
+      let deviceNum = 1;
+      if(configData.co2Min-data.co2==300) deviceNum=3;
+      service.post("/al/addAl",{gid:data.gid, time: data.time, parameter:2, value:data.co2, actionTaken:`启动${deviceNum}台通风机器`}).then(res=>{
+        console.log(res)
+        if(res.data.code!=200) return false
+      })
+      let deviceData = [];
+      for(let i=0;i<deviceNum;i++){
+        deviceData.push({gid:data.gid,type:4,status:"运行中"})
+      }
+      service.post("/dev/control",deviceData).then(res=>{
+        console.log(res)
+        if(res.data.code!=200) return false
+      })
+    }
+    if(parseInt(data.other)>configData.otherMax) {
+      ElMessage.error({message:"光照过强",duration:10000});
+      let deviceNum = 1;
+      if(parseInt(data.other)-configData.otherMax==30000) deviceNum=3;
+      service.post("/al/addAl",{gid:data.gid, time: data.time, parameter:3, value:data.other, actionTaken:`关闭${deviceNum}台光照机器`}).then(res=>{
+        console.log(res)
+        if(res.data.code!=200) return false
+      })
+      let deviceData = [];
+      for(let i=0;i<deviceNum;i++){
+        deviceData.push({gid:data.gid,type:5,status:"空闲中"})
+      }
+      service.post("/dev/control",deviceData).then(res=>{
+        console.log(res)
+        if(res.data.code!=200) return false
+      })
+    }
+    if(parseInt(data.other)<configData.otherMin) {
+      ElMessage.error({message:"光照强度过低",duration:10000});
+      let deviceNum = 1;
+      if(configData.otherMin-parseInt(data.other)==30000) deviceNum=3;
+      service.post("/al/addAl",{gid:data.gid, time: data.time, parameter:3, value:data.other, actionTaken:`启动${deviceNum}台光照机器`}).then(res=>{
+        console.log(res)
+        if(res.data.code!=200) return false
+      })
+      let deviceData = [];
+      for(let i=0;i<deviceNum;i++){
+        deviceData.push({gid:data.gid,type:5,status:"运行中"})
       }
       service.post("/dev/control",deviceData).then(res=>{
         console.log(res)
@@ -173,83 +241,17 @@ const addEvenData = ()=>{
       })
     }
   })
-  if(data.co2>configData.co2Max) {
-    ElMessage.error({message:"CO₂浓度过高",duration:10000});
-    let deviceNum = 1;
-    if(data.humidity-configData.humidityMax==300) deviceNum=3;
-    service.post("/al/addAl",{gid:data.gid, time: data.time, parameter:2, value:data.co2, actionTaken:`启动${deviceNum}台通风机器`}).then(res=>{
-      console.log(res)
-      if(res.data.code!=200) return false
-    })
-    let deviceData = [];
-    for(let i=0;i<deviceNum;i++){
-      deviceData.push({gid:data.gid,type:4,status:"开启"})
-    }
-    service.post("/dev/control",deviceData).then(res=>{
-      console.log(res)
-      if(res.data.code!=200) return false
-    })
-  }
-  if(data.co2<configData.co2Max) {
-    ElMessage.error({message:"CO₂浓度过低",duration:10000});
-    let deviceNum = 1;
-    if(configData.co2Min-data.co2==300) deviceNum=3;
-    service.post("/al/addAl",{gid:data.gid, time: data.time, parameter:2, value:data.co2, actionTaken:`启动${deviceNum}台通风机器`}).then(res=>{
-      console.log(res)
-      if(res.data.code!=200) return false
-    })
-    let deviceData = [];
-    for(let i=0;i<deviceNum;i++){
-      deviceData.push({gid:data.gid,type:4,status:"开启"})
-    }
-    service.post("/dev/control",deviceData).then(res=>{
-      console.log(res)
-      if(res.data.code!=200) return false
-    })
-  }
-  if(parseInt(data.other)>configData.otherMax) {
-    ElMessage.error({message:"光照过强",duration:10000});
-    let deviceNum = 1;
-    if(parseInt(data.other)-configData.otherMax==30000) deviceNum=3;
-    service.post("/al/addAl",{gid:data.gid, time: data.time, parameter:3, value:data.other, actionTaken:`关闭${deviceNum}台光照机器`}).then(res=>{
-      console.log(res)
-      if(res.data.code!=200) return false
-    })
-    let deviceData = [];
-    for(let i=0;i<deviceNum;i++){
-      deviceData.push({gid:data.gid,type:5,status:"关闭"})
-    }
-    service.post("/dev/control",deviceData).then(res=>{
-      console.log(res)
-      if(res.data.code!=200) return false
-    })
-  }
-  if(parseInt(data.other)<configData.otherMin) {
-    ElMessage.error({message:"光照强度过低",duration:10000});
-    let deviceNum = 1;
-    if(configData.otherMin-parseInt(data.other)==30000) deviceNum=3;
-    service.post("/al/addAl",{gid:data.gid, time: data.time, parameter:3, value:data.other, actionTaken:`启动${deviceNum}台光照机器`}).then(res=>{
-      console.log(res)
-      if(res.data.code!=200) return false
-    })
-    let deviceData = [];
-    for(let i=0;i<deviceNum;i++){
-      deviceData.push({gid:data.gid,type:5,status:"开启"})
-    }
-    service.post("/dev/control",deviceData).then(res=>{
-      console.log(res)
-      if(res.data.code!=200) return false
-    })
-  }
+
 }
 
 const emits = defineEmits(['newDataCreated'])
 
 const createRandomData = ()=>{
   setInterval(()=>{
+    console.log("生成数据啦啦啦啦啦");
     const time = dayjs().format("YYYY-MM-DD HH:mm:ss");
     const temRandom = getRandomInt(-10,60);
-    const humidityRandom = getRandomInt(40,85);
+    const humidityRandom = getRandomInt(45,95);
     const CO2Random = getRandomInt(600,2000);
     const otherRandom = getRandomInt(25000,65000);
 
@@ -269,16 +271,19 @@ const getGreenhouseId = (id:string,login:boolean)=>{
   data.gid = id
   isLogin.value = login
   console.log(id)
-}
-onMounted(()=>{
-  // getEveInfo()
-  if(isLogin.value){
+  console.log("生成数据", isLogin.value)
+  if (isLogin.value) {
     createRandomData();
   }
+}
+onMounted(()=> {
+  // getEveInfo()
 
 })
 
-defineExpose({
+
+
+  defineExpose({
   getEveInfo,getGreenhouseId
 })
 </script>

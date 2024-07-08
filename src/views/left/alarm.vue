@@ -91,7 +91,7 @@ defineExpose({
     padding: 2vh 1vw;
     .box{
       height: 100%;
-      background-color: #c6cbff;
+      background-color: #7b85d9;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -115,11 +115,11 @@ defineExpose({
         //background-color: #fff;
         text-align: center;
         border-radius: 10px;
-        background-color: #c6cbff;
+        background-color: #7b85d9;
         .el-table {
-          --el-table-header-bg-color: #c6cbff;
-          --el-table-bg-color: #c6cbff;
-          --el-table-tr-bg-color: #c6cbff;
+          --el-table-header-bg-color: #7b85d9;
+          --el-table-bg-color: #7b85d9;
+          --el-table-tr-bg-color: #7b85d9;
           --el-table-text-color: #fff;
           --el-table-row-hover-bg-color: #6a83ff;
           .el-button--primary.is-link, .el-button--primary.is-plain, .el-button--primary.is-text {
@@ -132,15 +132,15 @@ defineExpose({
         .pagination {
           margin-top: 35px;
           float: right;
-          //background-color: #c6cbff;
+          //background-color: #7b85d9;
           .el-pagination {
-            --el-pagination-bg-color: #c6cbff;
-            --el-pagination-text-color: #c6cbff;
+            --el-pagination-bg-color: #7b85d9;
+            --el-pagination-text-color: #7b85d9;
             --el-pagination-button-disabled-color: #ffffff;
-            --el-pagination-button-disabled-bg-color: #c6cbff;
+            --el-pagination-button-disabled-bg-color: #7b85d9;
             --el-pagination-hover-color: #ffffff;
             .el-select__wrapper {
-              background-color: #c6cbff;
+              background-color: #7b85d9;
               box-shadow: 0 0 0 1px #6a83ff inset;
             }
             .el-select__placeholder {

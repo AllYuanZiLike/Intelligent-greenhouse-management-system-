@@ -26,7 +26,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="温度最大值" prop="temperatureMin">
-            <el-select v-model="dataForm.temperatureMin" filterable allow-create default-first-option
+            <el-select v-model="dataForm.temperatureMax" filterable allow-create default-first-option
                        :reserve-keyword="false" placeholder="请选择或者输入新值">
               <el-option v-for="item in configList" :key="item.value" :label="`${item.key}:${item.value}`" :value="item.value"/>
             </el-select>
@@ -84,9 +84,48 @@ import service from "@/axios";
 import store from "@/store";
 import {ElMessage, FormInstance, FormRules} from "element-plus";
 
+
+const getDataForm = ()=>{
+  console.log(greenhouse.gid)
+  service.get("/con/getPages",{params:{gid:greenhouse.gid,pageNum:1,pageSize:100}}).then(res=>{
+    console.log(res)
+    if(res.data.code!=200) return false
+    let data = res.data.data.list;
+    for(let i=0;i<data.length;i++){
+      if(data[i].gid == greenhouse.gid) {
+        if(data[i].parameter == 0) {
+          dataForm.idTem = data[i].id;
+          dataForm.temperatureMax = data[i].max;
+          dataForm.temperatureMin = data[i].min;
+        }
+        if(data[i].parameter == 1) {
+          dataForm.idHudi = data[i].id;
+          dataForm.humidityMax = data[i].max;
+          dataForm.humidityMin = data[i].min;
+        }
+        if(data[i].parameter == 2) {
+          dataForm.idCO2 = data[i].id;
+          dataForm.co2Max = data[i].max;
+          dataForm.co2Min = data[i].min;
+        }
+        if(data[i].parameter == 3) {
+          dataForm.idOther = data[i].id;
+          dataForm.otherMax = data[i].max;
+          dataForm.otherMin = data[i].min;
+        }
+      }
+    }
+  })
+}
+
 const configList = reactive([])
 const getConfigList = ()=>{
+  service.get("/sys/getByUid",{params:{uid:store.state.userInfo.id}}).then(res=>{
+    console.log(res)
+    if(res.data.code!=200) return false
 
+    Object.assign(configList,res.data.data);
+  })
 }
 const greenhouse = reactive({
   gid: "",
@@ -101,12 +140,17 @@ const getGreenhouseId = (id:string,login:boolean)=>{
 const visibleDrawer = ref(false)
 const init = ()=>{
   visibleDrawer.value = true;
+  getConfigList();
+  getDataForm()
 }
 
 const dialogVisible = ref(false)
 const dataFormRef = ref()
 const dataForm = reactive({
-  id:"",
+  idTem:"",
+  idHudi:"",
+  idCO2:"",
+  idOther:"",
   uid:"",
   temperatureMin:0,
   temperatureMax:0,
@@ -115,7 +159,15 @@ const dataForm = reactive({
   co2Min:0,
   co2Max:0,
   otherMin:0,
-  otherMax:0
+  otherMax:0,
+  // temperatureMinAction:"",
+  // temperatureMaxAction:"",
+  // humidityMinAction:"",
+  // humidityMaxAction:"",
+  // co2MinAction:"",
+  // co2MaxAction:"",
+  // otherMinAction:"",
+  // otherMaxAction:""
 })
 
 const dataFormRules = reactive<FormRules<typeof dataForm>>({
@@ -132,17 +184,32 @@ const dataFormRules = reactive<FormRules<typeof dataForm>>({
 
 const submitDataForm = (formEl: FormInstance | undefined)=>{
   dataForm.uid = store.state.userInfo.id
+  console.log(greenhouse.gid)
   if (!formEl) return
   formEl.validate((valid) => {
     if (valid) {
       console.log(dataForm)
-      service.post("/greenHouse/addGreenHouse",dataForm).then(res=>{
+      service.put("/con/updateCon", {id:dataForm.idTem,gid:greenhouse.gid,parameter:"0",min:dataForm.temperatureMin,max:dataForm.temperatureMax,action:""}).then(res=>{
                 console.log(res)
                 if(res.data.code != 200) return false
-                ElMessage.success(res.data.msg)
-                dialogVisible.value = false;
               })
+      service.put("/con/updateCon", {id:dataForm.idHudi,gid:greenhouse.gid,parameter:"1",min:dataForm.humidityMin,max:dataForm.humidityMax,action:""}).then(res=>{
+        console.log(res)
+        if(res.data.code != 200) return false
+      })
+      service.put("/con/updateCon", {id:dataForm.idOther,gid:greenhouse.gid,parameter:"3",min:dataForm.otherMin,max:dataForm.otherMax,action:""}).then(res=>{
+        console.log(res)
+        if(res.data.code != 200) return false
+      })
+      service.put("/con/updateCon", {id:dataForm.idCO2,gid:greenhouse.gid,parameter:"2",min:dataForm.co2Min,max:dataForm.co2Max,action:""}).then(res=>{
+        console.log(res)
+        if(res.data.code != 200) return false
+        ElMessage.success("保存成功")
+      }).then(()=>{
+        visibleDrawer.value = false;
+      })
     }
+
   })
 }
 
@@ -159,7 +226,7 @@ defineExpose({
     padding: 2vh 1vw;
     .box{
       height: 100%;
-      background-color: #c6cbff;
+      background-color: #7b85d9;
       border-radius: 5%;
       border:2px double #6a83ff;
       .btn-box {

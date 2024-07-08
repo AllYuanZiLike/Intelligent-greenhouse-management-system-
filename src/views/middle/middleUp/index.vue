@@ -1,7 +1,9 @@
 <template>
   <div class="box">
     <div class="otherInfo">日期：{{nowTime}}</div>
-    <div ref="chartRef" id="chart" style="width: 100%;height: 90%;"></div>
+
+    <div v-show="!greenhouse.isLogin" style="width: 100%;height: 90%;display:flex;flex-direction: row;justify-content: center;align-items: center">暂无数据</div>
+    <div v-show="greenhouse.isLogin" ref="chartRef" id="chart" style="width: 100%;height: 90%;"></div>
 <!--    <el-carousel :interval="5000" arrow="always">-->
 <!--      <el-carousel-item v-for="(item, index) in carouselItems" :key="index">-->
 <!--       -->
@@ -101,7 +103,7 @@ const getHistoryData = ()=>{
       yAxis: [
         {
           type: 'value',
-          min:35,
+          min:45,
           max:95,
           interval:10,
           name: '湿度',
@@ -121,8 +123,8 @@ const getHistoryData = ()=>{
         {
           type: 'value',
           min:400,
-          max:700,
-          interval:50,
+          max:2400,
+          interval:400,
           name: 'CO₂浓度',
           position: 'right',
           alignTicks: true,
@@ -139,9 +141,9 @@ const getHistoryData = ()=>{
         },
         {
           type: 'value',
-          min:40000,
-          max:70000,
-          interval:5000,
+          min:25000,
+          max:65000,
+          interval:8000,
           name: '光照强度',
           position: 'right',
           alignTicks: true,
@@ -158,7 +160,7 @@ const getHistoryData = ()=>{
         },
         {
           type: 'value',
-          min:-40,
+          min:-20,
           max:80,
           interval:20,
           name: '温度',

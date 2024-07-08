@@ -32,7 +32,7 @@ defineExpose({
   align-items: center;
   #right-up {
     width: 50%;
-    height: 40%;
+    height: 32%;
   }
   .title {
     width: 30%;

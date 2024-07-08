@@ -102,7 +102,8 @@ const submitLoginForm = (formEl: FormInstance | undefined)=>{
     if (valid) {
       service.post("/login",loginForm).then(res=>{
         console.log(res)
-        if(res.data.code != 200) return false
+        if(res.status != 200) {ElMessage.error("登录失败，请检查输入是否正确")}
+        if(res.data.code != 200) {ElMessage.error("登录失败，请检查输入是否正确")}
         isLogin.value = true;
         let user = {
           id:"",
